@@ -1,6 +1,10 @@
 from __future__ import absolute_import
 
 from brownie import accounts, config, SimpleStorage, network
+import sys
+
+print(sys.path)
+from dotenv import load_dotenv
 
 
 def get_account():
