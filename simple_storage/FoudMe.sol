@@ -11,6 +11,15 @@ contract FoudMe {
     // 谁向合约付了多少钱
     mapping(address => uint256) public addressToAmountFunded;
 
+    // 所有付款者的地址
+    address[] public funders;
+    // 合约创建者的 token
+    address public owner;
+
+    constructor() public {
+        owner = msg.sender;
+    }
+
     function fund() public payable {
         // 设置一个付款最低值
         uint256 minUSD = 5 * 10**18;
@@ -20,6 +29,7 @@ contract FoudMe {
         );
 
         addressToAmountFunded[msg.sender] += msg.value;
+        funders.push(msg.sender);
     }
 
     function getVersion() public view returns (uint256) {
@@ -54,5 +64,29 @@ contract FoudMe {
         // 最终结果为 1ether代表多少USD
         // input 1 , output: 2529
         return ethAmountInUsd;
+    }
+
+    modifier onlyOwner() {
+        //is the message sender owner of the contract?
+        require(msg.sender == owner, "you are not owner");
+
+        _;
+    }
+
+    function withdraw() public payable onlyOwner {
+        // 归还所有的 eth
+        msg.sender.transfer(address(this).balance);
+
+        for (
+            uint256 funderIndex = 0;
+            funderIndex < funders.length;
+            funderIndex++
+        ) {
+            address funder = funders[funderIndex];
+            addressToAmountFunded[funder] = 0;
+        }
+
+        // 清空数据
+        funders = new address[](0);
     }
 }
