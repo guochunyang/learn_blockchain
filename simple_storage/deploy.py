@@ -1,8 +1,13 @@
 from __future__ import absolute_import
+
 import json
+import os
+
 from solcx import compile_standard, install_solc
 from web3 import Web3
+from dotenv import load_dotenv
 
+load_dotenv()
 install_solc("0.6.0")
 
 with open("./SimpleStorage.sol", "r") as file:
@@ -39,10 +44,10 @@ abi = json.loads(
 )["output"]["abi"]
 
 
-w3 = Web3(Web3.HTTPProvider("http://0.0.0.0:8545"))
-chain_id = 1337
-my_address = "0x199DCdA4A025EE5d7802Cb87f01235fa1911B0D3"  # todo
-private_key = "0x7b3351b7f355088e834e7d1f57bfa32cbcbcb88af77ef2054e5eb2a06d217795"
+w3 = Web3(Web3.HTTPProvider(os.getenv("RINKEBY_RPC_URL")))
+chain_id = 4
+my_address = "0x33CF29F9C0465B49d25e3F06e9f030fA5a21a0ad"  # todo
+private_key = os.getenv("PRIVATE_KEY")
 
 # 创建 SimpleStorage 合约对象
 SimpleStorage = w3.eth.contract(abi=abi, bytecode=bytecode)
