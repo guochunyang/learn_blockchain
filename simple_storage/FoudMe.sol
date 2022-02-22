@@ -2,13 +2,23 @@
 
 pragma solidity >=0.6.6 <0.9.0;
 
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "@chainlink/contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
+import "@chainlink/contracts/src/v0.6/vendor/SafeMathChainlink.sol";
 
 contract FoudMe {
+    using SafeMathChainlink for uint256;
+
     // 谁向合约付了多少钱
     mapping(address => uint256) public addressToAmountFunded;
 
     function fund() public payable {
+        // 设置一个付款最低值
+        uint256 minUSD = 5 * 10**18;
+        require(
+            getConversionRate(msg.value) >= minUSD,
+            "you need to spend more ETH!!!"
+        );
+
         addressToAmountFunded[msg.sender] += msg.value;
     }
 
