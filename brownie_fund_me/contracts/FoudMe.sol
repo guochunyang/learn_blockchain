@@ -51,6 +51,7 @@ contract FundMe {
         return uint256(answer * 10000000000);
     }
 
+    // ethAmount ether 代表了多少美金
     function getConversionRate(uint256 ethAmount)
         public
         view
@@ -68,7 +69,7 @@ contract FundMe {
         uint256 minimumUSD = 50 * 10**18;
         uint256 price = getPrice();
         uint256 precision = 1 * 10**18;
-        // 最后的单位是 wei 还是 gWei ?
+        // 最后的单位是 wei
         // return (minimumUSD * precision) / price;
         // We fixed a rounding error found in the video by adding one!
         return ((minimumUSD * precision) / price) + 1;
